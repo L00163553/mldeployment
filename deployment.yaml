@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insurance
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mldeployment
+  template:
+    metadata:
+      labels:
+        app: mldeployment
+    spec:
+      containers:
+      - name: cv-app
+        image: gcr.io/my-project/myapp:v1
+        ports:
+        - containerPort: 8501
