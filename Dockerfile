@@ -1,16 +1,15 @@
-FROM python:3.7
+FROM python:3.7-slim
 
-RUN apt-get update
+RUN adduser -D myuser
+USER myuser
+WORKDIR /home/myuser
 
-# Copy local code to the container image.
-ENV APP_HOME /app
-WORKDIR $APP_HOME
-COPY . ./
+COPY --chown=myuser:myuser requirements.txt requirements.txt
+RUN pip install --user -r requirements.txt
 
-RUN ls -la $APP_HOME/
+ENV PATH="/home/myuser/.local/bin:${PATH}"
 
-# install dependencies
-RUN pip install -r requirements.txt
+COPY --chown=myuser:myuser . .
 
 # expose port
 EXPOSE 5000
