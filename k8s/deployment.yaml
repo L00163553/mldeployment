@@ -13,7 +13,7 @@ spec:
         app: mldeployment
     spec:
       containers:
-      - name: cv-app
-        image: gcr.io/my-project/myapp:v1
+      - name: ml-app
+        image: gcr.io/mldeployment-351822/myapp:v1
         ports:
         - containerPort: 8501
