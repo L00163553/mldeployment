@@ -16,4 +16,4 @@ spec:
       - name: ml-app
         image: gcr.io/mldeployment-351822/myapp:v1
         ports:
-        - containerPort: 8501
+        - containerPort: 8000
