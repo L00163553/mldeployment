@@ -8,19 +8,36 @@
 #
 """
 
-from pycaret.regression import setup, create_model, save_model
-from pycaret.datasets import get_data
+from seaborn import PairGrid, scatterplot, kdeplot
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+import pickle
+import pandas as pd
 
-df = get_data("insurance")
+data = pd.read_csv('USA_Housing.csv')
+print(data)
+g = PairGrid(data, diag_sharey=False)
+g.map_upper(scatterplot, s=15)
+g.map_lower(kdeplot)
+g.map_diag(kdeplot, lw=2)
 
-r1 = setup(df, target='charges', session_id=123,
-           normalize=True,
-           polynomial_features=True, trigonometry_features=True,
-           feature_interaction=True,
-           bin_numeric_features=['age', 'bmi'])
+x = data.loc[:, 'Avg. Area Income':'Area Population']
+x = x.astype(int)
 
-# train a model
-model = create_model('lr')
+y = data.loc[:, 'Price']
+y = y.astype(int)
 
-# save pipeline/model
-save_model(model, model_name='deployment')
+# Split data into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=42)
+
+# Initialize regressor
+regressor = LinearRegression()
+
+# Begin fitting the training sets
+regressor.fit(X_train, y_train)
+# Find the score R2-score for both training and test sets
+regressor.score(X_train, y_train)
+regressor.score(X_test, y_test)
+
+#Save model
+pickle.dump(regressor, open('model.pkl', 'wb'))

@@ -1,32 +1,48 @@
-from flask import Flask, request
-from pycaret.regression import *
-import pandas as pd
+# Import main library
 import numpy as np
 
-app = Flask(__name__)
+# Import Flask modules
+from flask import Flask, request, render_template
 
-model = load_model('deployment')
-cols = ['age', 'sex', 'bmi', 'children', 'smoker', 'region']
+# Import pickle to save our regression model
+import pickle
+
+# Initialize Flask and set the template folder to "template"
+app = Flask(__name__, template_folder='template')
+
+# Open our model
+model = pickle.load(open('model.pkl', 'rb'))
 
 
-@app.route('/predict', methods=['POST'])
+# create our "home" route using the "index.html" page
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+
+# Set a post method to yield predictions on page
+@app.route('/', methods=['POST'])
 def predict():
-    int_features = [x for x in request.form.values()]
-    final = np.array(int_features)
-    data_unseen = pd.DataFrame([final], columns=cols)
-    prediction = predict_model(model, data=data_unseen, round=0)
-    prediction = int(prediction.Label[0])
-    return 'Expected Bill will be {}'.format(prediction)
+    # obtain all form values and place them in an array, convert into integers
+    int_features = [int(x) for x in request.form.values()]
+    # Combine them all into a final numpy array
+    final_features = [np.array(int_features)]
+    # predict the price given the values inputted by user
+    prediction = model.predict(final_features)
+
+    # Round the output to 2 decimal places
+    output = round(prediction[0], 2)
+
+    # If the output is negative, the values entered are unreasonable to the context of the application
+    # If the output is greater than 0, return prediction
+    if output < 0:
+        return render_template('index.html',
+                               prediction_text="Predicted Price is negative, values entered not reasonable")
+    elif output >= 0:
+        return render_template('index.html', prediction_text='Predicted Price of the house is: ${}'.format(output))
+
+    # Run app
 
 
-# @app.route('/predict_api', methods=['POST'])
-# def predict_api():
-#     data = request.get_json(force=True)
-#     data_unseen = pd.DataFrame([data])
-#     prediction = predict_model(model, data=data_unseen)
-#     output = prediction.Label[0]
-#     return jsonify(output)
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
