@@ -14,6 +14,6 @@ steps:
 - name: "gcr.io/cloud-builders/gke-deploy"
   args:
   - run
-  - --filename=K8/
+  - --filename=mldeployment/
   - --location=us-west1-b
   - --cluster=mykube
