@@ -3,7 +3,7 @@ import numpy as np
 
 # Import Flask modules
 from flask import Flask, request, render_template
-
+import config
 # Import pickle to save our regression model
 import pickle
 
@@ -45,4 +45,4 @@ def predict():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=config.PORT, debug=config.DEBUG_MODE)
