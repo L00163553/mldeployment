@@ -1,15 +1,15 @@
 FROM python:3.7-slim
 
-RUN adduser -D myuser
-USER myuser
-WORKDIR /home/myuser
+RUN pip install virtualenv
+ENV VIRTUAL_ENV=/venv
+RUN virtualenv venv -p python3
+ENV PATH="VIRTUAL_ENV/bin:$PATH"
 
-COPY --chown=myuser:myuser requirements.txt requirements.txt
-RUN pip install --user -r requirements.txt
+WORKDIR /app
+ADD . /app
 
-ENV PATH="/home/myuser/.local/bin:${PATH}"
-
-COPY --chown=myuser:myuser . .
+# install dependencies
+RUN pip install -r requirements.txt
 
 # expose port
 EXPOSE 5000
