@@ -5,6 +5,8 @@ ENV VIRTUAL_ENV=/venv
 RUN virtualenv venv -p python3
 ENV PATH="VIRTUAL_ENV/bin:$PATH"
 
+RUN pip install --upgrade pip
+
 WORKDIR /app
 ADD . /app
 
