@@ -10,7 +10,7 @@ COPY . ./
 RUN ls -la $APP_HOME/
 
 # Install dependencies
-#RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
 # expose port
 EXPOSE 5000
