@@ -1,14 +1,13 @@
 FROM python:3.7
 
-RUN pip install virtualenv
-ENV VIRTUAL_ENV=/venv
-RUN virtualenv venv -p python3
-ENV PATH="VIRTUAL_ENV/bin:$PATH"
+RUN apt-get update
 
-RUN pip install --upgrade pip
+# Copy local code to the container image.
+ENV APP_HOME /app
+WORKDIR $APP_HOME
+COPY . ./
 
-WORKDIR /app
-ADD . /app
+RUN ls -la $APP_HOME/
 
 # install dependencies
 RUN pip install -r requirements.txt
