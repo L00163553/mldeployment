@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: housepricepredictorv1
+  name: mldeployment
 spec:
   type: LoadBalancer
   selector:
-    app: housepricepredictorv1
+    app: mldeployment
   ports:
   - port: 80
     targetPort: 8080
